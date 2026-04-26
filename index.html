@@ -1521,7 +1521,7 @@ function openAdmin(){
     document.getElementById('passInput').value='';
     document.getElementById('passErr').style.display='none';
     m.style.display='flex';
-    setTimeout(()=>document.getElementById('passInput').focus(),100);
+    setTimeout(()=>document.getElementById('passInput').focus(),150);
     return;
   }
   loadAdminUI();
@@ -1535,12 +1535,12 @@ function checkAdminPass(){
     adminUnlocked=true;
     loadAdminUI();
     document.getElementById('adminOverlay').classList.add('open');
-  } else {
+  }else{
     document.getElementById('passErr').style.display='block';
     const inp=document.getElementById('passInput');
-    inp.value=''; inp.focus();
-    inp.style.borderColor='var(--red)';
-    setTimeout(()=>{ inp.style.borderColor='#252525'; document.getElementById('passErr').style.display='none'; },1500);
+    inp.value='';inp.focus();
+    inp.style.borderColor='#e74c3c';
+    setTimeout(()=>{inp.style.borderColor='#252525';document.getElementById('passErr').style.display='none';},1500);
   }
 }
 function closeAdmin(){document.getElementById('adminOverlay').classList.remove('open');adminUnlocked=false;}
@@ -1927,5 +1927,22 @@ window.addEventListener('resize',()=>{
   if(theProduct) swiperGo(currentMediaIdx);
 });
 </script>
+
+<div id="passModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.93);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#0e0e0e;border:1px solid #2a2a2a;border-radius:16px;padding:32px;width:100%;max-width:320px;text-align:center">
+    <div style="font-size:36px;margin-bottom:12px">🔒</div>
+    <h3 style="font-size:17px;font-weight:800;color:#c9a84c;margin-bottom:6px">لوحة الإدارة</h3>
+    <p style="font-size:12px;color:#555;margin-bottom:20px">أدخل كلمة السر للمتابعة</p>
+    <input type="password" id="passInput" placeholder="••••••••"
+      style="width:100%;background:#151515;border:1px solid #252525;color:#f0ebe2;padding:13px 16px;font-family:'Cairo',sans-serif;font-size:18px;outline:none;border-radius:10px;text-align:center;letter-spacing:4px;margin-bottom:10px;transition:border .2s"
+      onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#252525'"
+      onkeydown="if(event.key==='Enter')checkAdminPass()">
+    <div id="passErr" style="color:#e74c3c;font-size:12px;margin-bottom:12px;display:none">❌ كلمة السر خاطئة</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="checkAdminPass()" style="flex:1;padding:13px;background:#c9a84c;color:#000;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer">دخول ✅</button>
+      <button onclick="document.getElementById('passModal').style.display='none'" style="padding:13px 16px;background:none;border:1px solid #2a2a2a;color:#666;border-radius:10px;font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer">إلغاء</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
