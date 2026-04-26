@@ -465,7 +465,7 @@ footer p{color:#333;font-size:12px}
       <span class="cart-count" id="cartCount">0</span>
       🛍 السلة — <span id="cartTotal">0 دج</span>
     </button>
-    <button class="admin-btn" id="adminBtn" onclick="openAdmin()" style="visibility: visible;">⚙</button>
+    <button class="admin-btn" id="adminBtn" onclick="openAdmin()" style="visibility:hidden">⚙</button>
   </div>
 </nav>
 
@@ -3239,7 +3239,12 @@ function generateCustomerFile(){
   }
   showToast('⏳ جاري توليد الملف...');
   try{
+    // أخفِ زر الإدارة قبل النسخ حتى لا يظهر في ملف الزبائن بحالة visible
+    const _ab=document.getElementById('adminBtn');
+    const _abVis=_ab?_ab.style.visibility:'';
+    if(_ab) _ab.style.visibility='hidden';
     const html=document.documentElement.outerHTML;
+    if(_ab) _ab.style.visibility=_abVis;
     const configStr=JSON.stringify(savedCfg);
     // استبدل window.STORE_CONFIG بأي قيمة (null أو config قديم)
     let out=html.replace('window.STORE_CONFIG = {"apiKey":"AIzaSyCp8yqnWJ2UNcEjpQsX3Rv0cWpzN_KjCMc","authDomain":"shopix-b371d.firebaseapp.com","projectId":"shopix-b371d","storageBucket":"shopix-b371d.firebasestorage.app","messagingSenderId":"319129864766","appId":"1:319129864766:web:dcd305ee41ef095da69f6f"}; // injected','window.STORE_CONFIG = '+configStr+'; // injected');
