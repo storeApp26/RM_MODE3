@@ -820,6 +820,7 @@ let theProduct=null;
 let orders=[];
 let cart=[], selSize=null, selColor=null, selQty=1;
 let adminUnlocked=false;
+let cfgLoaded=false; // true بعد تحميل cfg من Firebase
 let formImages=[], formImageFiles=[], colorRows=[], activeSizes=new Set();
 let reviewStar=0;
 let fb=null;
@@ -873,6 +874,7 @@ async function bootStore(){
   try{
     fb=window._fb;
     await loadCfgFromDb();
+    cfgLoaded=true;
     applyConfig();
     listenProduct();
     listenOrders();
@@ -912,10 +914,12 @@ async function completeSetup(){
     document.getElementById('setupScreen').classList.remove('show');
     showToast('✅ تم إعداد المتجر بنجاح!');
     fb=window._fb;
+    cfgLoaded=true;
     applyConfig();
     listenProduct();
     listenOrders();
     document.getElementById('loadingScreen').style.display='none';
+    const ab=document.getElementById('adminBtn');if(ab)ab.style.visibility='visible';
     setTimeout(()=>showToast('💡 اذهب للإعدادات ← توليد ملف الزبائن'),3000);
   }catch(e){
     showSetupErr('❌ خطأ في الاتصال بـ Firebase: '+e.message);
@@ -1518,16 +1522,25 @@ async function testTelegram(){
 
 // ══ ADMIN ══
 function openAdmin(){
+  // لا تفتح أبداً إذا لم يكتمل تحميل بيانات الإعدادات
+  if(!cfgLoaded){ showToast('⏳ جاري تحميل البيانات...'); return; }
   const pass=(cfg.pass||'').trim();
-  if(pass&&!adminUnlocked){
-    document.getElementById('passInput').value='';
-    document.getElementById('passErr').style.display='none';
-    document.getElementById('passModal').style.display='flex';
-    setTimeout(()=>document.getElementById('passInput').focus(),100);
+  if(!pass){
+    // لا توجد كلمة سر — أدخل مباشرة (المالك الأول فقط)
+    document.getElementById('adminOverlay').classList.add('open');
+    loadAdminUI();
     return;
   }
-  document.getElementById('adminOverlay').classList.add('open');
-  loadAdminUI();
+  if(adminUnlocked){
+    document.getElementById('adminOverlay').classList.add('open');
+    loadAdminUI();
+    return;
+  }
+  // يوجد كلمة سر → أظهر نافذة الإدخال
+  document.getElementById('passInput').value='';
+  document.getElementById('passErr').style.display='none';
+  document.getElementById('passModal').style.display='flex';
+  setTimeout(()=>document.getElementById('passInput').focus(),100);
 }
 function checkAdminPass(){
   const input=document.getElementById('passInput').value.trim();
