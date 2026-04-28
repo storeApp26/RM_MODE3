@@ -467,7 +467,7 @@ footer p{color:#333;font-size:12px}
       <span class="cart-count" id="cartCount">0</span>
       🛍 السلة — <span id="cartTotal">0 دج</span>
     </button>
-    <button class="admin-btn" id="adminBtn" onclick="openAdmin()" style="visibility:hidden">⚙</button>
+    <button class="admin-btn" id="adminBtn" onclick="openAdmin()">⚙</button>
   </div>
 </nav>
 
@@ -852,7 +852,6 @@ function tryInit(){
   // لا config — أظهر شاشة الإعداد
   document.getElementById('loadingScreen').style.display='none';
   document.getElementById('setupScreen').classList.add('show');
-  const _ab=document.getElementById('adminBtn');if(_ab)_ab.style.visibility='visible';
 }
 
 window.addEventListener('load',()=>{
@@ -878,10 +877,8 @@ async function bootStore(){
     listenProduct();
     listenOrders();
     document.getElementById('loadingScreen').style.display='none';
-    const ab=document.getElementById('adminBtn');if(ab)ab.style.visibility='visible';
   }catch(e){
     document.getElementById('loadingScreen').style.display='none';
-    const ab=document.getElementById('adminBtn');if(ab)ab.style.visibility='visible';
     console.error(e);
   }
 }
@@ -917,7 +914,6 @@ async function completeSetup(){
     listenProduct();
     listenOrders();
     document.getElementById('loadingScreen').style.display='none';
-    const ab=document.getElementById('adminBtn');if(ab)ab.style.visibility='visible';
     setTimeout(()=>showToast('💡 اذهب للإعدادات ← توليد ملف الزبائن'),3000);
   }catch(e){
     showSetupErr('❌ خطأ في الاتصال بـ Firebase: '+e.message);
@@ -1903,8 +1899,7 @@ function generateCustomerFile(){
   }
   showToast('⏳ جاري توليد الملف...');
   try{
-    const _ab=document.getElementById('adminBtn');
-    if(_ab)_ab.style.visibility='hidden';
+    const _ab=document.getElementById('adminBtn');if(_ab)_ab.style.visibility='hidden';
     const html=document.documentElement.outerHTML;
     if(_ab)_ab.style.visibility='visible';
     const configStr=JSON.stringify(savedCfg);
@@ -1934,5 +1929,7 @@ window.addEventListener('resize',()=>{
   if(theProduct) swiperGo(currentMediaIdx);
 });
 </script>
+
+<div id="passModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.93);align-items:center;justify-content:center;padding:20px"><div style="background:#0e0e0e;border:1px solid #2a2a2a;border-radius:16px;padding:32px;width:100%;max-width:320px;text-align:center"><div style="font-size:36px;margin-bottom:12px">🔒</div><h3 style="font-size:17px;font-weight:800;color:#c9a84c;margin-bottom:6px">لوحة الإدارة</h3><p style="font-size:12px;color:#555;margin-bottom:20px">أدخل كلمة السر للمتابعة</p><input type="password" id="passInput" placeholder="••••••••" style="width:100%;background:#151515;border:1px solid #252525;color:#f0ebe2;padding:13px 16px;font-family:'Cairo',sans-serif;font-size:18px;outline:none;border-radius:10px;text-align:center;letter-spacing:4px;margin-bottom:10px;transition:border .2s" onfocus="this.style.borderColor='#c9a84c'" onblur="this.style.borderColor='#252525'" onkeydown="if(event.key==='Enter')checkAdminPass()"><div id="passErr" style="color:#e74c3c;font-size:12px;margin-bottom:12px;display:none">❌ كلمة السر خاطئة</div><div style="display:flex;gap:8px"><button onclick="checkAdminPass()" style="flex:1;padding:13px;background:#c9a84c;color:#000;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;cursor:pointer">دخول ✅</button><button onclick="document.getElementById('passModal').style.display='none'" style="padding:13px 16px;background:none;border:1px solid #2a2a2a;color:#666;border-radius:10px;font-family:'Cairo',sans-serif;font-size:14px;cursor:pointer">إلغاء</button></div></div></div>
 </body>
 </html>
